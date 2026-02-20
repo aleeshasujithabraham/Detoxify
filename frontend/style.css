@@ -707,6 +707,253 @@ main {
 
 .comment-likes svg { color: var(--pink-400); }
 
+/* ===== Analysis Dashboard ===== */
+.analysis-dashboard {
+    position: relative;
+    z-index: 10;
+    max-width: 780px;
+    margin: 0 auto 28px;
+    animation: fadeSlideUp 0.6s ease-out;
+}
+
+.dashboard-card {
+    background: var(--gradient-card);
+    backdrop-filter: blur(20px);
+    border-radius: 22px;
+    border: 1px solid rgba(255,255,255,0.7);
+    box-shadow: 0 8px 40px rgba(180, 120, 200, 0.1);
+    padding: 30px;
+}
+
+.dashboard-header h3 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 22px;
+}
+
+.dashboard-header h3 svg {
+    color: var(--pink-500);
+    -webkit-text-fill-color: initial;
+    stroke: var(--pink-500);
+}
+
+.dashboard-stats {
+    display: flex;
+    gap: 14px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+}
+
+.dash-stat {
+    flex: 1;
+    min-width: 80px;
+    text-align: center;
+    padding: 18px 10px;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(230, 220, 240, 0.5);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dash-stat:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(180, 120, 200, 0.12);
+}
+
+.dash-stat-number {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.8rem;
+    font-weight: 800;
+    line-height: 1;
+    margin-bottom: 4px;
+}
+
+.dash-stat-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.safe-stat .dash-stat-number { color: #10B981; }
+.safe-stat .dash-stat-label { color: #059669; }
+.safe-stat { border-color: rgba(16, 185, 129, 0.2); background: rgba(16, 185, 129, 0.06); }
+
+.flagged-stat .dash-stat-number { color: #EF4444; }
+.flagged-stat .dash-stat-label { color: #DC2626; }
+.flagged-stat { border-color: rgba(239, 68, 68, 0.2); background: rgba(239, 68, 68, 0.06); }
+
+.high-stat .dash-stat-number { color: #DC2626; }
+.high-stat .dash-stat-label { color: #B91C1C; }
+.high-stat { border-color: rgba(220, 38, 38, 0.2); background: rgba(220, 38, 38, 0.06); }
+
+.medium-stat .dash-stat-number { color: #F59E0B; }
+.medium-stat .dash-stat-label { color: #D97706; }
+.medium-stat { border-color: rgba(245, 158, 11, 0.2); background: rgba(245, 158, 11, 0.06); }
+
+.low-stat .dash-stat-number { color: #8B5CF6; }
+.low-stat .dash-stat-label { color: #7C3AED; }
+.low-stat { border-color: rgba(139, 92, 246, 0.2); background: rgba(139, 92, 246, 0.06); }
+
+.toxicity-bar-wrapper {
+    margin-top: 4px;
+}
+
+.toxicity-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--neutral-600);
+}
+
+.toxicity-percent {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+}
+
+.toxicity-bar {
+    width: 100%;
+    height: 10px;
+    background: rgba(230, 220, 240, 0.4);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.toxicity-fill {
+    height: 100%;
+    border-radius: 10px;
+    transition: width 1s ease-out;
+    background: linear-gradient(90deg, #10B981, #10B981);
+}
+
+.toxicity-fill.toxicity-low {
+    background: linear-gradient(90deg, #10B981, #8B5CF6);
+}
+
+.toxicity-fill.toxicity-medium {
+    background: linear-gradient(90deg, #F59E0B, #EF4444);
+}
+
+.toxicity-fill.toxicity-high {
+    background: linear-gradient(90deg, #EF4444, #DC2626);
+}
+
+/* ===== Filter Tabs ===== */
+.filter-tabs {
+    position: relative;
+    z-index: 10;
+    max-width: 780px;
+    margin: 0 auto 20px;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    animation: fadeSlideUp 0.6s ease-out;
+}
+
+.filter-btn {
+    padding: 9px 20px;
+    border-radius: 50px;
+    border: 1.5px solid var(--lavender-200);
+    background: rgba(255,255,255,0.7);
+    backdrop-filter: blur(10px);
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--neutral-500);
+    transition: all 0.25s ease;
+}
+
+.filter-btn:hover {
+    border-color: var(--pink-300);
+    color: var(--pink-600);
+    background: rgba(255, 240, 245, 0.8);
+}
+
+.filter-btn.active {
+    background: var(--gradient-btn);
+    color: white;
+    border-color: transparent;
+    box-shadow: 0 4px 16px rgba(232, 73, 141, 0.3);
+}
+
+/* ===== Analysis Badges on Comment Cards ===== */
+.analysis-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+    margin-left: auto;
+}
+
+.badge-safe {
+    background: rgba(16, 185, 129, 0.1);
+    color: #059669;
+    border: 1px solid rgba(16, 185, 129, 0.25);
+}
+
+.badge-safe svg { stroke: #10B981; }
+
+.badge-low {
+    background: rgba(139, 92, 246, 0.1);
+    color: #7C3AED;
+    border: 1px solid rgba(139, 92, 246, 0.25);
+}
+
+.badge-low svg { stroke: #8B5CF6; }
+
+.badge-medium {
+    background: rgba(245, 158, 11, 0.1);
+    color: #D97706;
+    border: 1px solid rgba(245, 158, 11, 0.25);
+}
+
+.badge-medium svg { stroke: #F59E0B; }
+
+.badge-high {
+    background: rgba(239, 68, 68, 0.1);
+    color: #DC2626;
+    border: 1px solid rgba(239, 68, 68, 0.25);
+}
+
+.badge-high svg { stroke: #EF4444; }
+
+/* ===== Flagged Comment Cards ===== */
+.comment-card.flagged {
+    border-left: 3px solid transparent;
+}
+
+.comment-card.severity-high {
+    border-left-color: #EF4444;
+    background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(254, 242, 242, 0.9));
+}
+
+.comment-card.severity-medium {
+    border-left-color: #F59E0B;
+    background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(255, 251, 235, 0.9));
+}
+
+.comment-card.severity-low {
+    border-left-color: #8B5CF6;
+    background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(245, 243, 255, 0.9));
+}
+
 /* ===== Footer ===== */
 footer {
     position: relative;

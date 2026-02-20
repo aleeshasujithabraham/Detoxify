@@ -43,7 +43,7 @@
         <!-- Hero Section -->
         <section class="hero">
             <h1><span class="gradient-text">Detoxify</span></h1>
-            <p class="hero-subtitle">Paste a YouTube URL and instantly see the top 100 comments.</p>
+            <p class="hero-subtitle">AI-powered sexism detection for YouTube comments. Paste a URL, get instant safety analysis.</p>
         </section>
 
         <!-- URL Input Section -->
@@ -85,15 +85,15 @@
         <section class="features-row">
             <div class="feature-pill">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-                Instant Results
+                AI-Powered
             </div>
             <div class="feature-pill">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                100 Comments
+                Sexism Detection
             </div>
             <div class="feature-pill">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                Safe Analysis
+                Safety First
             </div>
         </section>
 
@@ -153,6 +153,57 @@
                     </div>
                 </div>
             </div>
+        </section>
+
+        <!-- Analysis Dashboard -->
+        <section id="analysisDashboard" class="analysis-dashboard" style="display:none;">
+            <div class="dashboard-card">
+                <div class="dashboard-header">
+                    <h3>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                        Safety Analysis
+                    </h3>
+                </div>
+                <div class="dashboard-stats">
+                    <div class="dash-stat safe-stat">
+                        <div class="dash-stat-number" id="safeCount">0</div>
+                        <div class="dash-stat-label">Safe</div>
+                    </div>
+                    <div class="dash-stat flagged-stat">
+                        <div class="dash-stat-number" id="flaggedCount">0</div>
+                        <div class="dash-stat-label">Flagged</div>
+                    </div>
+                    <div class="dash-stat high-stat">
+                        <div class="dash-stat-number" id="highCount">0</div>
+                        <div class="dash-stat-label">High</div>
+                    </div>
+                    <div class="dash-stat medium-stat">
+                        <div class="dash-stat-number" id="mediumCount">0</div>
+                        <div class="dash-stat-label">Medium</div>
+                    </div>
+                    <div class="dash-stat low-stat">
+                        <div class="dash-stat-number" id="lowCount">0</div>
+                        <div class="dash-stat-label">Low</div>
+                    </div>
+                </div>
+                <div class="toxicity-bar-wrapper">
+                    <div class="toxicity-label">
+                        <span>Toxicity Level</span>
+                        <span id="toxicityPercent" class="toxicity-percent">0%</span>
+                    </div>
+                    <div class="toxicity-bar">
+                        <div class="toxicity-fill" id="toxicityFill" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Filter Tabs -->
+        <section id="filterTabs" class="filter-tabs" style="display:none;">
+            <button class="filter-btn active" data-filter="all" onclick="filterComments('all')">All</button>
+            <button class="filter-btn" data-filter="safe" onclick="filterComments('safe')">Safe</button>
+            <button class="filter-btn" data-filter="flagged" onclick="filterComments('flagged')">Flagged</button>
+            <button class="filter-btn" data-filter="high" onclick="filterComments('high')">High Severity</button>
         </section>
 
         <!-- Comments Section -->

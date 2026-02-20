@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from googleapiclient.discovery import build
+from transformers import pipeline
 from dotenv import load_dotenv
 import os
 import re
@@ -13,6 +14,17 @@ app = Flask(__name__)
 CORS(app)
 
 YOUTUBE_API_KEY = os.getenv("YOUTUBE_API_KEY")
+
+# -------------------------------------------------------------------
+# Load the sexism detection model ONCE at startup
+# Model: NLP-LTU/distilbert-sexism-detector (pretrained, zero training)
+# -------------------------------------------------------------------
+print("Loading AI model... (this may take a minute on first run)")
+classifier = pipeline(
+    "text-classification",
+    model="NLP-LTU/distilbert-sexism-detector"
+)
+print("AI model loaded successfully!")
 
 
 def extract_video_id(url):
@@ -90,9 +102,32 @@ def fetch_video_info(video_id):
     }
 
 
+def classify_comment(text):
+    """Run a single comment through the sexism detection model."""
+    try:
+        # Truncate long comments to avoid model issues
+        truncated = text[:512] if len(text) > 512 else text
+        result = classifier(truncated)[0]
+        is_sexist = result["label"] == "LABEL_1"
+        confidence = round(result["score"] * 100, 1)
+
+        if is_sexist:
+            severity = "high" if confidence > 90 else "medium" if confidence > 75 else "low"
+        else:
+            severity = "none"
+
+        return {
+            "isSexist": is_sexist,
+            "confidence": confidence,
+            "severity": severity,
+        }
+    except Exception:
+        return {"isSexist": False, "confidence": 0, "severity": "none"}
+
+
 @app.route("/api/comments", methods=["POST"])
 def get_comments():
-    """API endpoint to fetch YouTube comments."""
+    """API endpoint to fetch and analyze YouTube comments."""
     data = request.get_json()
     url = data.get("url", "").strip()
 
@@ -113,10 +148,34 @@ def get_comments():
 
         comments = fetch_comments(video_id, max_comments=100)
 
+        # Run each comment through the AI classifier
+        for comment in comments:
+            analysis = classify_comment(comment["text"])
+            comment["isSexist"] = analysis["isSexist"]
+            comment["confidence"] = analysis["confidence"]
+            comment["severity"] = analysis["severity"]
+
+        # Summary stats
+        total = len(comments)
+        flagged = sum(1 for c in comments if c["isSexist"])
+        safe = total - flagged
+        high_count = sum(1 for c in comments if c.get("severity") == "high")
+        medium_count = sum(1 for c in comments if c.get("severity") == "medium")
+        low_count = sum(1 for c in comments if c.get("severity") == "low")
+
         return jsonify({
             "video": video_info,
             "comments": comments,
-            "totalFetched": len(comments)
+            "totalFetched": total,
+            "analysis": {
+                "totalComments": total,
+                "flaggedCount": flagged,
+                "safeCount": safe,
+                "toxicityPercentage": round(flagged / total * 100, 1) if total > 0 else 0,
+                "highSeverity": high_count,
+                "mediumSeverity": medium_count,
+                "lowSeverity": low_count,
+            }
         })
 
     except Exception as e:
@@ -130,7 +189,7 @@ def get_comments():
 
 @app.route("/api/health", methods=["GET"])
 def health_check():
-    return jsonify({"status": "ok", "api_key_configured": bool(YOUTUBE_API_KEY)})
+    return jsonify({"status": "ok", "api_key_configured": bool(YOUTUBE_API_KEY), "model_loaded": classifier is not None})
 
 
 if __name__ == "__main__":
