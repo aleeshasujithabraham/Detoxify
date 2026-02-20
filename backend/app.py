@@ -16,13 +16,14 @@ CORS(app)
 YOUTUBE_API_KEY = os.getenv("YOUTUBE_API_KEY")
 
 # -------------------------------------------------------------------
-# Load the sexism detection model ONCE at startup
-# Model: NLP-LTU/distilbert-sexism-detector (pretrained, zero training)
+# Load the offensive language detection model ONCE at startup
+# Model: cardiffnlp/twitter-roberta-base-offensive (pretrained)
+# Trained on ~58M tweets, fine-tuned on TweetEval offensive benchmark
 # -------------------------------------------------------------------
 print("Loading AI model... (this may take a minute on first run)")
 classifier = pipeline(
     "text-classification",
-    model="NLP-LTU/distilbert-sexism-detector"
+    model="cardiffnlp/twitter-roberta-base-offensive"
 )
 print("AI model loaded successfully!")
 
@@ -103,26 +104,26 @@ def fetch_video_info(video_id):
 
 
 def classify_comment(text):
-    """Run a single comment through the sexism detection model."""
+    """Run a single comment through the offensive language detection model."""
     try:
         # Truncate long comments to avoid model issues
         truncated = text[:512] if len(text) > 512 else text
         result = classifier(truncated)[0]
-        is_sexist = result["label"] == "LABEL_1"
+        is_offensive = result["label"] == "offensive"
         confidence = round(result["score"] * 100, 1)
 
-        if is_sexist:
+        if is_offensive:
             severity = "high" if confidence > 90 else "medium" if confidence > 75 else "low"
         else:
             severity = "none"
 
         return {
-            "isSexist": is_sexist,
+            "isFlagged": is_offensive,
             "confidence": confidence,
             "severity": severity,
         }
     except Exception:
-        return {"isSexist": False, "confidence": 0, "severity": "none"}
+        return {"isFlagged": False, "confidence": 0, "severity": "none"}
 
 
 @app.route("/api/comments", methods=["POST"])
@@ -151,13 +152,13 @@ def get_comments():
         # Run each comment through the AI classifier
         for comment in comments:
             analysis = classify_comment(comment["text"])
-            comment["isSexist"] = analysis["isSexist"]
+            comment["isFlagged"] = analysis["isFlagged"]
             comment["confidence"] = analysis["confidence"]
             comment["severity"] = analysis["severity"]
 
         # Summary stats
         total = len(comments)
-        flagged = sum(1 for c in comments if c["isSexist"])
+        flagged = sum(1 for c in comments if c["isFlagged"])
         safe = total - flagged
         high_count = sum(1 for c in comments if c.get("severity") == "high")
         medium_count = sum(1 for c in comments if c.get("severity") == "medium")

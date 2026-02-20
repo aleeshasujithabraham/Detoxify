@@ -141,10 +141,10 @@ function filterComments(filter) {
     let filtered;
     switch (filter) {
         case "safe":
-            filtered = allComments.filter(c => !c.isSexist);
+            filtered = allComments.filter(c => !c.isFlagged);
             break;
         case "flagged":
-            filtered = allComments.filter(c => c.isSexist);
+            filtered = allComments.filter(c => c.isFlagged);
             break;
         case "high":
             filtered = allComments.filter(c => c.severity === "high");
@@ -206,7 +206,7 @@ function createCommentCard(comment, number) {
     card.className = "comment-card";
 
     // Add severity class for flagged comments
-    if (comment.isSexist) {
+    if (comment.isFlagged) {
         card.classList.add("flagged");
         card.classList.add(`severity-${comment.severity}`);
     }
@@ -224,7 +224,7 @@ function createCommentCard(comment, number) {
 
     // Build the analysis badge
     let analysisBadge = "";
-    if (comment.isSexist) {
+    if (comment.isFlagged) {
         const severityLabel = comment.severity.charAt(0).toUpperCase() + comment.severity.slice(1);
         analysisBadge = `
             <span class="analysis-badge badge-${comment.severity}" title="${comment.confidence}% confidence">
